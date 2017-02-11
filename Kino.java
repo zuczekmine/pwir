@@ -3,13 +3,8 @@ package kino;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Kino {
-
-    private Lock zamknijSale = new ReentrantLock();
     private int kolejkaBarek, numerSali;
     private int[] kolejkiSemafor = new int[4];
     private String[] saleTytuly = new String[4];
@@ -53,6 +48,7 @@ public class Kino {
                     Thread.sleep(sale[0].pobierzCzas());
                     System.out.println("Film " + sale[0].pobierzTytul() + " zakoñczy³ siê w sali " + sale[0].pobierzNumer());
                     sale[0].ustawMiejsca(16);
+                    Symulacja.seans(nrSali);
                 }
             }
             if (nrSali == 2) {
@@ -61,6 +57,7 @@ public class Kino {
                     Thread.sleep(sale[1].pobierzCzas());
                     System.out.println("Film " + sale[1].pobierzTytul() + " zakoñczy³ siê w sali " + sale[1].pobierzNumer());
                     sale[1].ustawMiejsca(16);
+                    Symulacja.seans(nrSali);
                 }
             }
             if (nrSali == 3) {
@@ -69,6 +66,7 @@ public class Kino {
                     Thread.sleep(sale[2].pobierzCzas());
                     System.out.println("Film " + sale[2].pobierzTytul() + " zakoñczy³ siê w sali " + sale[2].pobierzNumer());
                     sale[2].ustawMiejsca(16);
+                    Symulacja.seans(nrSali);
                 }
             }
             if (nrSali == 4) {
@@ -77,10 +75,11 @@ public class Kino {
                     Thread.sleep(sale[3].pobierzCzas());
                     System.out.println("Film " + sale[3].pobierzTytul() + " zakoñczy³ siê w sali " + sale[3].pobierzNumer());
                     sale[3].ustawMiejsca(16);
+                    Symulacja.seans(nrSali);
                 }
             }
         } catch (InterruptedException e) {
-            System.out.println("B³¹d LAMUSIE");
+            System.out.println("B³¹d");
         } finally {
         }
     }
@@ -108,34 +107,34 @@ public class Kino {
     }
 
     public static void main(String[] args) {
-    	EventQueue.invokeLater(new Runnable() {
+    	Random priorytet = new Random();
+        Kasa kasa1 = new Kasa();
+        Kasa kasa2 = new Kasa();
+        Kasa kasa3 = new Kasa();
+        Kasa kasa4 = new Kasa();
+        EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run(){
 				try{
-				new Symulacja("Symulator kina");
+				new Symulacja("Symulator kina", kasa1, kasa2, kasa3, kasa4);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("B³¹d");
 			}
 		}
 		});
     	try {
     		Thread.sleep(3000);
     	} catch (InterruptedException e) {
+    		System.out.println("B³¹d");
         }
-    	Random priorytet = new Random();
-        Kasa kasa1 = new Kasa();
-        Kasa kasa2 = new Kasa();
-        Kasa kasa3 = new Kasa();
-        Kasa kasa4 = new Kasa();
-        Sala sala1 = new Sala("Ob-Sesja 2.0", 1, 2, 30000);
-        Sala sala2 = new Sala("Harry Routter i serwerownia tajemnic", 2, 2, 25000);
-        Sala sala3 = new Sala("W sieci z³a: TCP/IP", 3, 2, 35000);
-        Sala sala4 = new Sala("W sieci z³a: powrót ISO OSI", 4, 2, 27000);
+        Sala sala1 = new Sala("Ob-Sesja 2.0", 1, 16, 30000);
+        Sala sala2 = new Sala("Harry Routter i serwerownia tajemnic", 2, 16, 25000);
+        Sala sala3 = new Sala("W sieci z³a: TCP/IP", 3, 16, 35000);
+        Sala sala4 = new Sala("W sieci z³a 2: powrót ISO OSI", 4, 16, 27000);
         Sala[] sale = {sala1, sala2, sala3, sala4};
         Barek barek = new Barek();
         Kino kino = new Kino(kasa1, kasa2, kasa3, kasa4, sala1, sala2, sala3, sala4, sale, barek);
-        Klient[] klienci = new Klient[70];
+        Klient[] klienci = new Klient[140];
         Rozklad rozklad = new Rozklad();
         rozklad.start();
         Sala1Organizacja sala1Demon = new Sala1Organizacja(kino);
@@ -156,6 +155,7 @@ public class Kino {
             try {
                 Thread.sleep((int) (Math.random() * 5000));
             } catch (InterruptedException e) {
+            	System.out.println("B³¹d");
             }
         }
     }
@@ -180,7 +180,7 @@ class Sala1Organizacja extends Thread {
                 Thread.sleep(3000);
             }
         } catch (InterruptedException e) {
-            System.out.println("BÂ³Â¹d LAMUSIE");
+            System.out.println("B³¹d");
         }
     }
 }
@@ -204,7 +204,7 @@ class Sala2Organizacja extends Thread {
                 Thread.sleep(3000);
             }
         } catch (InterruptedException e) {
-            System.out.println("BÂ³Â¹d LAMUSIE");
+            System.out.println("B³¹d");
         }
     }
 }
@@ -228,7 +228,7 @@ class Sala3Organizacja extends Thread {
                 Thread.sleep(3000);
             }
         } catch (InterruptedException e) {
-            System.out.println("BÂ³Â¹d LAMUSIE");
+            System.out.println("B³¹d");
         }
     }
 }
@@ -252,206 +252,13 @@ class Sala4Organizacja extends Thread {
                 Thread.sleep(3000);
             }
         } catch (InterruptedException e) {
-            System.out.println("BÂ³Â¹d LAMUSIE");
+            System.out.println("B³¹d");
         }
     }
 }
 
-class Kasa {
 
-    private String[] tytulyFilmow = {"Ob-Sesja 2.0", "Harry Routter i serwerownia tajemnic", "W sieci z³a: TCP/IP", "W sieci z³a 2: powrót ISO OSI"};
-    private String[] tytulyNiepelnoletni = {"Ob-Sesja 2.0", "Harry Routter i serwerownia tajemnic"};
-    private int miejscaWSali;
-    private boolean czyDopuszczony = true;
-    protected Semaphore semafor = new Semaphore(1, true);
-    private Lock blokada = new ReentrantLock();
-    private ZajmijSiedzenie zajmijSiedzenie;
 
-    public String[] pobierzTytuly() {
-        return tytulyFilmow;
-    }
-
-    public String[] pobierzTytulyNiepelnoletni() {
-        return tytulyNiepelnoletni;
-    }
-
-    public boolean sprawdzCzyDopuszczony(int wiek, String tytulFilmu) {
-        if (tytulFilmu == "W sieci z³a: TCP/IP" || tytulFilmu == "W sieci z³a: powrót ISO OSI") {
-            if (wiek < 18) {
-                czyDopuszczony = false;
-            }
-        }
-        return czyDopuszczony;
-    }
-
-    public boolean kupuje(String nazwaKlienta, Sala sala, boolean czyMaBilet) { 
-        blokada.lock();
-        try {
-            miejscaWSali = sala.pobierzMiejsca();
-            if (miejscaWSali > 0) {
-                miejscaWSali--;
-                zajmijSiedzenie = new ZajmijSiedzenie(sala.pobierzNumer());
-                sala.ustawMiejsca(miejscaWSali);
-                Thread.sleep((int) (Math.random() * 10000));
-                czyMaBilet = true;
-            } else {
-                Thread.sleep((int) (Math.random() * 5000));
-                System.out.println("Brak miejsc na film " + sala.pobierzTytul() + ". Klient opuszcza kino.");
-                czyMaBilet = false;
-            }
-        } catch (InterruptedException e) {
-            System.out.println("BÂ³Â¹d LAMUSIE");
-        } finally {
-            blokada.unlock();
-        }
-        return czyMaBilet;
-    }
-}
-
-class Klient extends Thread {
-
-    private String tytulFilmu, nazwaKlienta;
-    private boolean czyPrzekaski, czyPozwolono, czyMaBilet;
-    private String[] tytulyDoWyboru;
-    private int[] kolejki, pomocnicza;
-    private int wiek, wybranaKolejka, minimalnaWartosc, osobyDoBarku;
-    private Kasa kasa = new Kasa();
-    private Kino kino;
-    private Sala sala;
-    protected Random losuj = new Random();
-
-    public Klient(String nazwaKlienta, Kino kino) {
-        this.kino = kino;
-        this.nazwaKlienta = nazwaKlienta;
-        czyPrzekaski = false; //Czy przekÃ‚Â¹ski z this???
-        czyMaBilet = false;
-        tytulyDoWyboru = kasa.pobierzTytuly();
-        tytulFilmu = tytulyDoWyboru[losuj.nextInt(tytulyDoWyboru.length)];
-        wiek = losuj.nextInt(99);
-    }
-
-    public void wchodzi() {
-        System.out.println("Klient " + nazwaKlienta + " wchodzi do kina");
-    }
-
-    public void zmienCzyPrzekaski(boolean czyPrzekaski) {
-        this.czyPrzekaski = czyPrzekaski;
-    }
-
-    public int WybierzNajmniejszaKolejke(int[] kolejki) {
-        int minimalnaWartosc = kolejki[0];
-        int pomoc = 0;
-        
-        for (int i = 0; i < kolejki.length; i++) {
-            if (kolejki[i] < minimalnaWartosc) {
-                minimalnaWartosc = kolejki[i];
-                pomoc = i;
-            }
-        }
-        return pomoc;
-    }
-
-    public void run() {
-        try {
-            wchodzi();
-            pomocnicza = kino.pobierzLiczbeOsob();
-            kolejki = kino.pobierzLiczbeOsob();
-            wybranaKolejka = WybierzNajmniejszaKolejke(kolejki);
-            switch (wybranaKolejka) {
-                case 0:
-                    if (kino.kasa1.semafor.tryAcquire()) {
-                        System.out.println("Klient " + nazwaKlienta + " podchodzi do kasy 1");
-                    } else {
-                        System.out.println("Klient " + nazwaKlienta + " czeka w kolejce do kasy 1");
-                        kino.kasa1.semafor.acquire();
-                    }
-                    Thread.sleep((int) (Math.random() * 2000));
-                    break;
-                case 1:
-                    if (kino.kasa2.semafor.tryAcquire()) {
-                        System.out.println("Klient " + nazwaKlienta + " podchodzi do kasy 2");
-                    } else {
-                        System.out.println("Klient " + nazwaKlienta + " czeka w kolejce do kasy 2");
-                        kino.kasa2.semafor.acquire();
-                    }
-                    Thread.sleep((int) (Math.random() * 2000));
-                    break;
-                case 2:
-                    if (kino.kasa3.semafor.tryAcquire()) {
-                        System.out.println("Klient " + nazwaKlienta + " podchodzi do kasy 3");
-                    } else {
-                        System.out.println("Klient " + nazwaKlienta + " czeka w kolejce do kasy 3");
-                        kino.kasa3.semafor.acquire();
-                    }
-                    Thread.sleep((int) (Math.random() * 2000));
-                    break;
-                case 3:
-                    if (kino.kasa4.semafor.tryAcquire()) {
-                        System.out.println("Klient " + nazwaKlienta + " podchodzi do kasy 4");
-                    } else {
-                        System.out.println("Klient " + nazwaKlienta + " czeka w kolejce do kasy 4");
-                        kino.kasa4.semafor.acquire();
-                    }
-
-                    Thread.sleep((int) (Math.random() * 2000));
-                    break;
-            }
-
-            czyPozwolono = kasa.sprawdzCzyDopuszczony(wiek, tytulFilmu);
-            if (czyPozwolono == false) {
-                System.out.println("Klient " + nazwaKlienta + " jest niepe³noletni - musi wybraæ inny film");
-                tytulyDoWyboru = kasa.pobierzTytulyNiepelnoletni();
-                tytulFilmu = tytulyDoWyboru[losuj.nextInt(tytulyDoWyboru.length)];
-                sala = kino.sprawdzSale(tytulFilmu);
-                System.out.println("Klient " + nazwaKlienta + " kupuje bilet....");
-                czyMaBilet = kasa.kupuje(nazwaKlienta, sala, czyMaBilet);
-            } else {
-                sala = kino.sprawdzSale(tytulFilmu);
-               
-                System.out.println("Klient " + nazwaKlienta + " kupuje bilet....");
-                czyMaBilet = kasa.kupuje(nazwaKlienta, sala, czyMaBilet);
-            }
-
-        } catch (InterruptedException e) {
-            System.out.println("BÂ³Â¹d LAMUSIE");
-        } finally {
-            switch (wybranaKolejka) {
-                case 0:
-                    kino.kasa1.semafor.release();
-                    System.out.println("Klient " + nazwaKlienta + " odchodzi od kasy 1");
-                    break;
-                case 1:
-                    kino.kasa2.semafor.release();
-                    System.out.println("Klient " + nazwaKlienta + " odchodzi od kasy 2");
-                    break;
-                case 2:
-                    kino.kasa3.semafor.release();
-                    System.out.println("Klient " + nazwaKlienta + " odchodzi od kasy 3");
-                    break;
-                case 3:
-                    kino.kasa4.semafor.release();
-                    System.out.println("Klient " + nazwaKlienta + " odchodzi od kasy 4");
-                    break;
-            }
-        }
-        if (czyMaBilet) {
-            try {
-                osobyDoBarku = kino.barek.semafor.getQueueLength();
-                if (osobyDoBarku < 6) {
-                    kino.barek.semafor.acquire();
-                    System.out.println("Klient " + nazwaKlienta + " idzie kupiæ przek¹ski");
-                    zmienCzyPrzekaski(true);
-                    Thread.sleep((int) (Math.random() * 5000));
-                    kino.barek.semafor.release();
-                }
-            } catch (InterruptedException e) {
-                System.out.println("BÂ³Â¹d LAMUSIE");
-            } finally {
-            	kino.wejdzDoSali(nazwaKlienta, sala);
-            }
-        }
-    }
-}
 
 class Rozklad extends Thread {
 
@@ -472,50 +279,8 @@ class Rozklad extends Thread {
             try {
                 Thread.sleep(15000);
             } catch (InterruptedException e) {
-                System.out.println("BÂ³Â¹d LAMUSIE");
+                System.out.println("B³¹d");
             }
         }
-    }
-}
-
-class Sala {
-
-    private String tytulFilmu;
-    private int liczbaMiejsc, dlugoscFilmu, numerSali;
-
-    public Sala(String tytulFilmu, int numerSali, int liczbaMiejsc, int dlugoscFilmu) {
-        this.tytulFilmu = tytulFilmu;
-        this.numerSali = numerSali;
-        this.liczbaMiejsc = liczbaMiejsc;
-        this.dlugoscFilmu = dlugoscFilmu;
-    }
-
-    public int pobierzNumer() {
-        return numerSali;
-    }
-
-    public String pobierzTytul() {
-        return tytulFilmu;
-    }
-
-    public int pobierzMiejsca() {
-        return liczbaMiejsc;
-    }
-
-    public int pobierzCzas() {
-        return dlugoscFilmu;
-    }
-
-    public void ustawMiejsca(int liczbaMiejsc) {
-        this.liczbaMiejsc = liczbaMiejsc;
-    }
-}
-
-class Barek extends Kasa {
-
-    protected Semaphore semafor = new Semaphore(1, true);
-
-    public void kupujePrzekaski(String nazwaKlienta) {
-        System.out.println("Klient " + nazwaKlienta + " kupuje przek¹ski.");
     }
 }
